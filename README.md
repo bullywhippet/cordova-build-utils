@@ -1,5 +1,3 @@
-#Build, Sign, and Package iOS app without Opening XCode
-#Build and Package Android app
 #Provides
  --Build, Sign, and Package iOS app without Opening XCode
  --Build and Package Android app from command line
