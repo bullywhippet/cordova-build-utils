@@ -5,8 +5,9 @@ version=0.01.00
 archivePath="${HOME}/Deployables/APPNAME"
 appName="APPNAME"
 packagePrefix="app-name"
+indexWaitTime=20
 
-#Update with your Profisioning Profile Information Here 
+#Update with your Profisioning Profile Information Here
 provisioningProfile="XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX" 
 codeSignIdentity="iPhone Distribution: Your Company Name, LLC"
 
@@ -14,11 +15,19 @@ codeSignIdentity="iPhone Distribution: Your Company Name, LLC"
 #Start Generic Script
 #DO NOT MODIFY BELOW UNLESS ABSOLUTELY NECESSARY
 #############################################################################################################
+
 archiveLocation="${archivePath}/${appName}.xcarchive"
 appLocation="${archiveLocation}/Products/Applications/${appName}.app"
 ipaLocation="${archivePath}/${appName}.ipa"
 xcodeProjectLocation="platforms/ios/${appName}.xcodeproj"
 
+open "${xcodeProjectLocation}" 
+echo "Waiting ${indexWaitTime} seconds to let project index"
+sleep $indexWaitTime
+echo "Closing Xcode"
+osascript -e 'quit app "Xcode"'
+
+echo "Beginning xcodebuild"
 xcodebuild \
 	-project "${xcodeProjectLocation}" \
 	-scheme "${appName}" archive \
