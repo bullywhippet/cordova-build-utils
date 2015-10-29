@@ -6,6 +6,9 @@ archivePath="${HOME}/Deployables/APPNAME"
 appName="APPNAME"
 packagePrefix="app-name"
 indexWaitTime=20
+##Uncomment the line below to override the default android build tools
+## version used by cordova.
+#androidBuildToolVersion=22.0.1
 
 #Update with your Profisioning Profile Information Here
 provisioningProfile="XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX" 
@@ -22,12 +25,12 @@ ipaLocation="${archivePath}/${appName}.ipa"
 xcodeProjectLocation="platforms/ios/${appName}.xcodeproj"
 
 open "${xcodeProjectLocation}" 
-echo "Waiting ${indexWaitTime} seconds to let project index"
+echo "---------Waiting ${indexWaitTime} seconds to let project index---------"
 sleep $indexWaitTime
 echo "Closing Xcode"
 osascript -e 'quit app "Xcode"'
 
-echo "Beginning xcodebuild"
+echo "---------Beginning xcodebuild---------"
 xcodebuild \
 	-project "${xcodeProjectLocation}" \
 	-scheme "${appName}" archive \
@@ -43,7 +46,14 @@ xcrun \
 
 #BUILDING ANDROID
 echo "------BUILDING ANDROID------"
-cordova build android
+if [ -z "$androidBuildToolVersion" ]
+then
+        echo "---------No Android Build Tool Version set. Default to Cordova's Default"
+        cordova build android
+else
+        echo "---------Android Build Tool Version set. Using ${androidBuildToolVersion}"
+        cordova build android -- --gradleArg=-PcdvBuildToolsVersion=${androidBuildToolVersion}
+fi
 
 cp ./platforms/android/build/outputs/apk/android-debug.apk "${archivePath}/${packagePrefix}-v${version}.apk"
 
