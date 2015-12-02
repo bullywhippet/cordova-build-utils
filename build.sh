@@ -1,11 +1,25 @@
 #!/bin/bash
 
+if [ -z $ENV ]
+then
+   lowerEnv="dev"
+else
+   lowerEnv=`echo $ENV | tr '[A-Z]' '[a-z]'`
+fi
+upperEnv=`echo $lowerEnv | tr '[a-z]' '[A-Z]'`
+ 
 #Update Application Specific Values HERE
-version=0.01.00
+version=0.00.00
 archivePath="${HOME}/Deployables/APPNAME"
-appName="APPNAME"
-packagePrefix="app-name"
+packagePrefix="app-name-${lowerEnv}"
 indexWaitTime=20
+appNamePrefix="APPNAME"
+if [ $upperEnv = "PROD" ]
+then
+	appName="${appNamePrefix}"
+else
+	appName="${appNamePrefix} ${upperEnv}"
+fi
 ##Uncomment the line below to override the default android build tools
 ## version used by cordova.
 #androidBuildToolVersion=22.0.1
@@ -19,10 +33,25 @@ codeSignIdentity="iPhone Distribution: Your Company Name, LLC"
 #DO NOT MODIFY BELOW UNLESS ABSOLUTELY NECESSARY
 #############################################################################################################
 
+echo "------CONFIG------"
+echo "version: ${version}"
+echo "archivePath: ${archivePath}"
+echo "appName: ${appName}"
+echo "packagePrefix: ${packagePrefix}"
+echo "indexWaitTime: ${indexWaitTime}"
+echo "androidBuildToolVersion: ${androidBuildToolVersion}"
+
 archiveLocation="${archivePath}/${appName}.xcarchive"
 appLocation="${archiveLocation}/Products/Applications/${appName}.app"
 ipaLocation="${archivePath}/${appName}.ipa"
 xcodeProjectLocation="platforms/ios/${appName}.xcodeproj"
+
+echo "------RE-ADD iOS PLATFORM------"
+cordova platform remove ios
+cordova platform add ios
+
+echo "------PRE-BUILDING iOS------"
+cordova build ios
 
 open "${xcodeProjectLocation}" 
 echo "---------Waiting ${indexWaitTime} seconds to let project index---------"
