@@ -7,6 +7,8 @@ else
    lowerEnv=`echo $ENV | tr '[A-Z]' '[a-z]'`
 fi
 upperEnv=`echo $lowerEnv | tr '[a-z]' '[A-Z]'`
+
+now=`date +%Y-%m-%d-%H%M`
  
 #Update Application Specific Values HERE
 version=0.00.00
@@ -24,9 +26,10 @@ fi
 ## version used by cordova.
 #androidBuildToolVersion=22.0.1
 
-#Update with your Profisioning Profile Information Here
+#Update with your Signing values here 
 provisioningProfile="XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX" 
-codeSignIdentity="iPhone Distribution: Your Company Name, LLC"
+developmentTeamId="XXXXXXXXX"
+codeSignIdentity="iPhone Developer"
 
 #############################################################################################################
 #Start Generic Script
@@ -41,7 +44,7 @@ echo "packagePrefix: ${packagePrefix}"
 echo "indexWaitTime: ${indexWaitTime}"
 echo "androidBuildToolVersion: ${androidBuildToolVersion}"
 
-archiveLocation="${archivePath}/${appName}.xcarchive"
+archiveLocation="${archivePath}/${now}_${appName}.xcarchive"
 appLocation="${archiveLocation}/Products/Applications/${appName}.app"
 ipaLocation="${archivePath}/${appName}.ipa"
 xcodeProjectLocation="platforms/ios/${appName}.xcodeproj"
@@ -65,8 +68,9 @@ xcodebuild \
 	-scheme "${appName}" archive \
 	-archivePath "${archiveLocation}" \
 	-configuration Release \
-	PROVISIONING_PROFILE="${provisioningProfile}" \
+	DEVELOPMENT_TEAM="${developmentTeamId}" \
 	CODE_SIGN_IDENTITY="${codeSignIdentity}"
+	#PROVISIONING_PROFILE="${provisioningProfile}" \
 
 xcrun \
 	-sdk iphoneos PackageApplication \
