@@ -2,7 +2,7 @@
 
 if [ -z $1 ]
 then
-   owerEnv="dev"
+  lowerEnv="dev"
 else
   lowerEnv=`echo $1 | tr '[A-Z]' '[a-z]'`
 fi
